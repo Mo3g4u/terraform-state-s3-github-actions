@@ -200,34 +200,18 @@ data "aws_iam_policy_document" "managed_resources" {
     resources = ["*"]
   }
 
+  # Full S3 access scoped strictly to buckets matching the managed prefix.
+  # Action wildcard is safe here because the resource ARN restricts blast radius
+  # to "<prefix>-*" buckets only. Enumerating actions individually is brittle —
+  # several S3 IAM actions don't follow the Get/Put/ListBucket* naming pattern
+  # (e.g. s3:GetAccelerateConfiguration, s3:PutBucketTagging) and missing one
+  # breaks Terraform's post-create refresh.
   statement {
-    sid    = "ManagePrefixedBuckets"
-    effect = "Allow"
-    actions = [
-      "s3:CreateBucket",
-      "s3:DeleteBucket",
-      "s3:GetBucket*",
-      "s3:PutBucket*",
-      "s3:ListBucket*",
-      "s3:GetEncryptionConfiguration",
-      "s3:PutEncryptionConfiguration",
-      "s3:GetLifecycleConfiguration",
-      "s3:PutLifecycleConfiguration",
-    ]
+    sid     = "ManagePrefixedBuckets"
+    effect  = "Allow"
+    actions = ["s3:*"]
     resources = [
       "arn:aws:s3:::${var.managed_bucket_prefix}-*",
-    ]
-  }
-
-  statement {
-    sid    = "ManagePrefixedBucketObjects"
-    effect = "Allow"
-    actions = [
-      "s3:GetObject",
-      "s3:PutObject",
-      "s3:DeleteObject",
-    ]
-    resources = [
       "arn:aws:s3:::${var.managed_bucket_prefix}-*/*",
     ]
   }
