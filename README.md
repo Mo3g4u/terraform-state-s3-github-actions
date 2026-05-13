@@ -22,7 +22,7 @@ Terraform の state 管理と CI/CD を構築するリポジトリ。
 
 | コンポーネント | 役割 |
 |---|---|
-| `bootstrap/` | tfstate 用 S3 バケット、GitHub OIDC Provider、IAM ロール/ポリシーを作成。**初回 1 度だけローカルから apply** |
+| `bootstrap/` | tfstate 用 S3 バケットと IAM ロール/ポリシーを作成。GitHub OIDC Provider は既存を `data` で参照。**初回 1 度だけローカルから apply** |
 | `terraform/environments/<env>/` | 各環境のリソース定義。S3 backend で state を共有 |
 | `.github/workflows/terraform.yml` | PR で plan、main push で apply。GitHub Environments で承認を要求 |
 

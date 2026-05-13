@@ -6,10 +6,6 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
-    tls = {
-      source  = "hashicorp/tls"
-      version = "~> 4.0"
-    }
   }
 }
 
@@ -88,17 +84,15 @@ resource "aws_s3_bucket_lifecycle_configuration" "tfstate" {
 }
 
 # ---------------------------------------------------------------------------
-# GitHub OIDC provider
+# GitHub OIDC provider (shared resource, looked up by URL)
+#
+# OIDC providers are 1-per-AWS-account. We reference the existing provider
+# instead of creating one to avoid ownership conflicts with other projects
+# in the same account.
 # ---------------------------------------------------------------------------
 
-data "tls_certificate" "github" {
+data "aws_iam_openid_connect_provider" "github" {
   url = "https://token.actions.githubusercontent.com"
-}
-
-resource "aws_iam_openid_connect_provider" "github" {
-  url             = "https://token.actions.githubusercontent.com"
-  client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = [data.tls_certificate.github.certificates[0].sha1_fingerprint]
 }
 
 # ---------------------------------------------------------------------------
@@ -112,7 +106,7 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
 
     principals {
       type        = "Federated"
-      identifiers = [aws_iam_openid_connect_provider.github.arn]
+      identifiers = [data.aws_iam_openid_connect_provider.github.arn]
     }
 
     condition {

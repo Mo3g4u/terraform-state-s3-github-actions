@@ -9,8 +9,8 @@ output "tfstate_bucket_arn" {
 }
 
 output "github_oidc_provider_arn" {
-  description = "ARN of the GitHub Actions OIDC provider"
-  value       = aws_iam_openid_connect_provider.github.arn
+  description = "ARN of the GitHub Actions OIDC provider (data source: existing shared resource)"
+  value       = data.aws_iam_openid_connect_provider.github.arn
 }
 
 output "github_actions_role_arn" {

@@ -18,7 +18,7 @@ Terraform state 管理に必要な AWS リソース自身を作成する Terrafo
 | 種別 | 名前 | 用途 |
 |---|---|---|
 | S3 Bucket | `learn-tf-tfstate-456788081138` | 各環境の tfstate 格納 (バージョニング有効 / SSE-S3 / Public Block / 非現行版 90 日で削除) |
-| IAM OIDC Provider | `token.actions.githubusercontent.com` | GitHub Actions からの OIDC 認証 |
+| IAM OIDC Provider | `token.actions.githubusercontent.com` | **既存リソースを `data` で参照** (AWS アカウント内で 1 つしか作れない共有リソースのため、所有しない設計) |
 | IAM Role | `github-actions-terraform` | GitHub Actions が AssumeRole する Terraform 実行用ロール |
 | IAM Policy | `github-actions-terraform-tfstate-access` | tfstate バケット + `.tflock` ファイルの読み書き |
 | IAM Policy | `github-actions-terraform-managed-resources` | 各環境スタックが管理する実リソース (現状は `learn-tf-sample-*` プレフィックスの S3 のみ) |
@@ -61,7 +61,7 @@ IAM ロールの `sub` 条件は `repo:Mo3g4u/terraform-state-s3-github-actions:
   誤って削除されないように保護されている。本当に削除する場合は、`main.tf` の該当ブロックを削除してから `terraform destroy` する。
 - バケット内に各環境の tfstate が残っている状態で destroy すると失敗する。
   事前に全環境を `terraform destroy` してから bootstrap を消すこと。
-- OIDC プロバイダーは AWS アカウントごとに 1 つ。他のリポジトリでも共有している場合は削除前に要確認。
+- **OIDC プロバイダーはこのスタックの管理対象外** (`data` 参照のみ)。bootstrap を destroy しても OIDC Provider は削除されない。他リポジトリと共有しているため、これは意図した挙動。
 
 ## IAM 権限について
 

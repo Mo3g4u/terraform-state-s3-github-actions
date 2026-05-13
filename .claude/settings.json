@@ -11,7 +11,18 @@
       "Bash(gh auth *)",
       "Bash(gh repo *)",
       "Bash(git init *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(aws sts *)",
+      "Bash(aws --version)",
+      "Bash(aws configure *)",
+      "Bash(env)",
+      "Read(//Users/takeuchi/.aws/**)",
+      "Bash(aws sso *)",
+      "Bash(AWS_PROFILE=takeuchi-dev terraform plan -out=tfplan -no-color)",
+      "Bash(AWS_PROFILE=takeuchi-dev terraform apply -no-color tfplan)"
     ]
   }
 }
