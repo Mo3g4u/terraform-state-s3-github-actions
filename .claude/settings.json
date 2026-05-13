@@ -22,7 +22,25 @@
       "Read(//Users/takeuchi/.aws/**)",
       "Bash(aws sso *)",
       "Bash(AWS_PROFILE=takeuchi-dev terraform plan -out=tfplan -no-color)",
-      "Bash(AWS_PROFILE=takeuchi-dev terraform apply -no-color tfplan)"
+      "Bash(AWS_PROFILE=takeuchi-dev terraform apply -no-color tfplan)",
+      "Bash(gh run *)",
+      "Bash(AWS_PROFILE=takeuchi-dev aws s3api list-buckets --query \"Buckets[?starts_with\\(Name, 'learn-tf-sample'\\)].Name\" --output text)",
+      "Bash(AWS_PROFILE=takeuchi-dev aws s3api list-objects-v2 --bucket learn-tf-sample-dev --max-items 1 --query 'Contents[].Key' --output text)",
+      "Bash(AWS_PROFILE=takeuchi-dev aws s3 rb s3://learn-tf-sample-dev)",
+      "Bash(AWS_PROFILE=takeuchi-dev aws s3 cp s3://learn-tf-tfstate-456788081138/dev/terraform.tfstate /tmp/dev.tfstate)",
+      "Read(//tmp/**)",
+      "Bash(AWS_PROFILE=takeuchi-dev terraform init -input=false)",
+      "Bash(AWS_PROFILE=takeuchi-dev terraform state list)",
+      "Bash(AWS_PROFILE=takeuchi-dev terraform state rm aws_s3_bucket.sample)",
+      "Bash(AWS_PROFILE=takeuchi-dev aws s3 cp s3://learn-tf-tfstate-456788081138/dev/terraform.tfstate /tmp/dev2.tfstate)",
+      "Bash(git checkout *)",
+      "Bash(git commit -m 'test: add PRFlowTag to dev sample bucket to verify PR plan comment *)",
+      "Bash(gh pr create --title 'test: PR flow verification \\(dev tag change\\)' --body ' *)",
+      "Bash(gh pr *)",
+      "Bash(git pull *)",
+      "Bash(AWS_PROFILE=takeuchi-dev aws s3api get-bucket-tagging --bucket learn-tf-sample-dev --output json)",
+      "Bash(AWS_PROFILE=takeuchi-dev aws s3api get-bucket-tagging --bucket learn-tf-sample-stg --output json)",
+      "Bash(git commit -m 'chore: extend .claude/settings.json with commands used in this session *)"
     ]
   }
 }
