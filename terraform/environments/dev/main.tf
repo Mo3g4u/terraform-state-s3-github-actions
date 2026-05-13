@@ -6,8 +6,9 @@ resource "aws_s3_bucket" "sample" {
   bucket = local.sample_bucket_name
 
   tags = {
-    Name    = local.sample_bucket_name
-    Purpose = "smoke-test for tfstate backend and CI/CD"
+    Name      = local.sample_bucket_name
+    Purpose   = "smoke-test for tfstate backend and CI/CD"
+    PRFlowTag = "added-to-verify-pr-plan-comment"
   }
 }
 
