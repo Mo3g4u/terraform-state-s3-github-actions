@@ -154,14 +154,6 @@ jobs:
         if: steps.plan.outcome == 'failure'
         run: exit 1
 
-      - name: Upload plan artifact
-        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply')
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan-${{ matrix.environment }}
-          path: terraform/environments/${{ matrix.environment }}/tfplan
-          retention-days: 7
-
   # ---------------------------------------------------------------------------
   # apply: runs on push to main, or manual dispatch (action=apply)
   # Each environment is gated by GitHub Environments protection rules
@@ -206,11 +198,10 @@ jobs:
       - name: Terraform init
         run: terraform init -input=false
 
-      - name: Download plan artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: tfplan-${{ matrix.environment }}
-          path: terraform/environments/${{ matrix.environment }}/
-
+      # Plan + apply in the same job, deliberately not reusing the plan ジョブ's
+      # tfplan artifact. Passing a saved plan across jobs triggers
+      # "Saved plan is stale" because the two jobs run on separate runners and
+      # Terraform records refresh state in the plan file. Re-planning inside
+      # the apply job keeps the snapshot consistent with the apply.
       - name: Terraform apply
-        run: terraform apply -input=false -auto-approve tfplan
+        run: terraform apply -input=false -auto-approve
