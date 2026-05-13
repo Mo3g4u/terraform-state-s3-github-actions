@@ -1,0 +1,42 @@
+# Terraform workspaces and downloaded modules/providers
+.terraform/
+.terraform.tfstate.lock.info
+
+# State files (must NEVER be committed; remote state is in S3, bootstrap/ state is local-only)
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Plan output
+tfplan
+*.tfplan
+
+# Sensitive variable overrides
+# - terraform.tfvars : COMMITTED (contains only non-sensitive defaults)
+# - *.auto.tfvars    : COMMITTED if non-sensitive, otherwise ignore explicitly
+# - secret.tfvars    : NEVER commit
+secret.tfvars
+*.secret.tfvars
+*.private.tfvars
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Override files (used for local-only experimentation)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI configuration
+.terraformrc
+terraform.rc
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+
+# NOTE: .terraform.lock.hcl is intentionally NOT ignored — it must be committed
+# to pin provider versions across machines and CI.
